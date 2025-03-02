@@ -7,26 +7,27 @@ public class Player1Controller : MonoBehaviour
 
     public GameObject projectilePrefab;
     public float projectileSpeed = 10f;
+    public float projectileMaxDistance = 15f; // Control max distance from here
 
     void Update()
     {
-        // Get the input from the WASD keys.
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
 
-        // Calculate the movement direction.
         Vector2 movementDirection = new Vector2(0, verticalInput);
-
-        // Move the sprite forward or backward.
         transform.Translate(movementDirection * speed * Time.deltaTime);
-
-        // Rotate the sprite left or right.
         transform.Rotate(0, 0, -horizontalInput * rotationSpeed * Time.deltaTime);
 
         if (Input.GetKeyDown(KeyCode.G))
         {
-            GameObject projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
-            projectile.GetComponent<Rigidbody2D>().velocity = transform.up * projectileSpeed;
+            GameObject projectileObject = Instantiate(projectilePrefab, transform.position, transform.rotation);
+            Projectile projectileScript = projectileObject.GetComponent<Projectile>();
+
+            if (projectileScript != null)
+            {
+                projectileScript.maxDistance = projectileMaxDistance;
+                projectileObject.GetComponent<Rigidbody2D>().linearVelocity = transform.up * projectileSpeed;
+            }
         }
     }
 
